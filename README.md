@@ -6,6 +6,18 @@
 
 用于 Claude Code 中转站 Any Router 多账号每日签到，一次 $25，限时注册即送 100 美金，[点击这里注册](https://anyrouter.top/register?aff=gSsN)。业界良心，支持 Claude Code 百万上下文（使用 `/model sonnet[1m]` 开启），`gemini-2.5-pro` 模型。
 
+## 项目概述
+
+这是一个用于 AnyRouter.top 的自动签到与用量汇总工具，支持多账号。它会在 GitHub Actions 中按计划运行，自动为你领取每日 $25 配额，并将结果通过你配置的通知渠道发送给你。
+
+工作原理：
+- 读取环境变量 ANYROUTER_ACCOUNTS 中的 JSON 数组，解析每个账号的 cookies 与 api_user。
+- 使用 Playwright 启动浏览器访问登录页，获取 WAF 相关 cookies（acw_tc、cdn_sec_tc、acw_sc__v2），以绕过站点防护。
+- 合并 WAF cookies 与用户 cookies，并携带 new-api-user 请求头，使用 httpx 调用 AnyRouter API 完成签到。
+- 查询账户余额与已用额度，汇总多个账号的结果。
+- 通过 notify.py 的通知组件将结果推送到邮箱或各类机器人（钉钉/飞书/企业微信/PushPlus/Server酱）。
+- 由 .github/workflows/checkin.yml 每 6 小时触发执行，也可在 Actions 页面手动运行。
+
 ## 功能特性
 
 - ✅ 单个/多账号自动签到
